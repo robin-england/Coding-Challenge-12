@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="example.js"></script>
+    <title>Challenge 12</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body onload="main()">
+    <h1>Apple/Google Stock Prices</h1>
+    <form id="stockFilter">           <!-- Creates Form to filter views -->
+
+        <label for="stockChoice">Select Stock:</label>
+        <select name="stockChoice" id="stockChoice" required>
+            <option disabled selected value=""></option>
+            <option value="Apple">Apple</option>
+            <option value="Google">Google</option>          <!-- Creates filter for stock apple/google -->
+        </select>
+
+        <label for="startDate">Select Start Date:</label>
+        <select name="startDate" id="startDate" required>   <!-- Creates filter for start date -->
+            <option disabled selected value=""></option>
+            <option value="1">2023-01-01</option>
+            <option value="2">2023-01-02</option>
+            <option value="3">2023-01-03</option>
+            <option value="4">2023-01-04</option>
+        </select>
+
+        <label for="endDate">Select End Date:</label>
+        <select name="endDate" id="endDate" required>       <!-- Creates filter for end date -->
+            <option disabled selected value=""></option>
+            <option value="2">2023-01-02</option>
+            <option value="3">2023-01-03</option>
+            <option value="4">2023-01-04</option>
+            <option value="5">2023-01-05</option>
+        </select><br><br>
+
+        <input type="submit" value="Submit">
+
+    </form><br><br>
+</body>
+</html>

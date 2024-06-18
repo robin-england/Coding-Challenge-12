@@ -81,14 +81,32 @@ document.getElementById("stockFilter").addEventListener("submit", (event)=>{
     
     let g = svg.append("g").attr('transform', 'translate('+50+','+(-50)+')')
 
-    g.selectAll('svg')     
+    g.selectAll('.bar')     
         .data(prices)
         .enter().append('rect')     // Creates rectangles
-        .attr('fill','darkgreen')
+        .on("mouseover", highlight)   // Adds Event Listeners
+        .on("mouseout", reset)
+        .attr('class','bar')
         .attr('x', function(d, i){return i*100+15})
         .attr('y', function(prices){return yScale(prices)+10})
         .attr('width', function(d, i){return width/6 -25})
         .attr('height', function(prices){return height - yScale(prices)})
+
+    function highlight(d, i){                                   // Hightlights
+            let xPos = parseFloat(d3.select(this).attr('x'))    // Gets x and y position
+            let yPos = parseFloat(d3.select(this).attr('y'))
+            d3.select('#tooltip')
+                    .style('left', xPos + 'px')
+                    .style('top', yPos + 'px')
+                    .select('#tooltipText').text(stock)         // Displays stock of select attributes
+            d3.select('#tooltip').classed('hidden', false); 
+            d3.select(this).attr('class','highlight')
+        }
+        
+    function reset(d, i){                                       // Changes back to normal
+                    d3.select(this).attr('class','bar')
+                    d3.select('#tooltip').classed('hidden', true);   
+        }
 
     })
 }

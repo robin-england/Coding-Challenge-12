@@ -49,20 +49,17 @@ document.getElementById("stockFilter").addEventListener("submit", (event)=>{
     
     let prices = filteredArray.map(({ Price }) => Number(Price))
     let dates = filteredArray.map(({ Date }) => Date)
-    
-    console.log(filteredArray);                                 // Testing array has correct values before proceeding
-    console.log(prices);
-    console.log(dates);
        
     let svg = d3.select('svg')
     svg.selectAll("*").remove(); // Clear SVG from previous use
 
-    let xScale = d3.scaleLinear()
-                .domain([])
-                .range([0, width-100])
+    let xScale = d3.scaleBand()
+                .domain(dates)
+                .range([0, width-50])
+                .padding(0.1)
 
     let yScale = d3.scaleLinear()
-                    .domain([d3.min(prices)-10, d3.max(prices)+10])
+                    .domain([100, 170])
                     .range([height-50, 0])
 
     let x_axis = d3.axisBottom()
@@ -79,31 +76,34 @@ document.getElementById("stockFilter").addEventListener("submit", (event)=>{
             .attr('transform','translate(50,'+ (height-40)+ ')')
             .call(x_axis)                           // Adds X axis
     
-    let g = svg.append("g").attr('transform', 'translate('+50+','+(-50)+')')
-
-    g.selectAll('.bar')     
+    svg.selectAll('.bar')     
         .data(prices)
         .enter().append('rect')     // Creates rectangles
-        .on("mouseover", highlight)   // Adds Event Listeners
+        .on("mouseover", function (event, d) {highlight(event, d, this, dates, prices);})   // Adds Event Listeners
         .on("mouseout", reset)
         .attr('class','bar')
-        .attr('x', function(d, i){return i*100+15})
-        .attr('y', function(prices){return yScale(prices)+10})
-        .attr('width', function(d, i){return width/6 -25})
-        .attr('height', function(prices){return height - yScale(prices)})
+        .attr('x', function(d, i){return xScale(dates[i])+50})
+        .attr('y', function(d){return yScale(d)+10})
+        .attr('width', xScale.bandwidth())
+        .attr('height', function(d){return height - 50 - yScale(d)})
 
-    function highlight(d, i){                                   // Hightlights
-            let xPos = parseFloat(d3.select(this).attr('x'))    // Gets x and y position
-            let yPos = parseFloat(d3.select(this).attr('y'))
+    function highlight(event, d, element, dates, prices){                                   // Hightlights
+            let xPos = parseFloat(d3.select(element).attr('x'))    // Gets x and y position
+            let yPos = parseFloat(d3.select(element).attr('y'))
+
+            let index = prices.indexOf(d);
+            let date = dates[index];
+            let price = prices[index];
+        
             d3.select('#tooltip')
                     .style('left', xPos + 'px')
                     .style('top', yPos + 'px')
-                    .select('#tooltipText').text(stock)         // Displays stock of select attributes
+                    .select('#tooltipText').text(`Stock: ${stock}<br>Date: ${date}<br>Price: ${price}`)         // Displays elements for selected bar
             d3.select('#tooltip').classed('hidden', false); 
-            d3.select(this).attr('class','highlight')
+            d3.select(element).attr('class','highlight')
         }
         
-    function reset(d, i){                                       // Changes back to normal
+    function reset(){                                       // Changes back to normal
                     d3.select(this).attr('class','bar')
                     d3.select('#tooltip').classed('hidden', true);   
         }

@@ -98,7 +98,7 @@ document.getElementById("stockFilter").addEventListener("submit", (event)=>{
             d3.select('#tooltip')
                     .style('left', xPos + 'px')
                     .style('top', yPos + 'px')
-                    .select('#tooltipText').text(`Stock: ${stock}<br>Date: ${date}<br>Price: ${price}`)         // Displays elements for selected bar
+                    .select('#tooltipText').html(`Stock: ${stock}<br>Date: ${date}<br>Price: ${price}`)         // Displays elements for selected bar
             d3.select('#tooltip').classed('hidden', false); 
             d3.select(element).attr('class','highlight')
         }

@@ -9,14 +9,22 @@ let startDate
 let endDate
 let filteredArray       // Defines variables to retain them outside of functions
 
-d3.csv('mock_stock_data.csv', d3.autoType).then(        // Pulls CSV file
+let width = 600
+let height = 600
+
+d3.select('body')
+    .append('svg')          // Creates SVG
+    .attr('width', width)
+    .attr('height', height)
+
+d3.csv('mock_stock_data.csv').then(        // Pulls CSV file
     function(d){
         elements = d                                    // Loads CSV data into elements variable
         })
 
 document.getElementById("stockFilter").addEventListener("submit", (event)=>{
     event.preventDefault() 
-
+    
     stock = document.getElementById("stockChoice").value       // Registers submission from html form
     startDate = document.getElementById("startDate").value    
     endDate = document.getElementById("endDate").value  
@@ -38,8 +46,49 @@ document.getElementById("stockFilter").addEventListener("submit", (event)=>{
     for (let index = 5; index > endDate; index--) {             // Removes elements from end of CSV array based on end date
         filteredArray.pop()
         }
-        
+    
+    let prices = filteredArray.map(({ Price }) => Number(Price))
+    let dates = filteredArray.map(({ Date }) => Date)
+    
     console.log(filteredArray);                                 // Testing array has correct values before proceeding
+    console.log(prices);
+    console.log(dates);
+       
+    let svg = d3.select('svg')
+    svg.selectAll("*").remove(); // Clear SVG from previous use
+
+    let xScale = d3.scaleLinear()
+                .domain([])
+                .range([0, width-100])
+
+    let yScale = d3.scaleLinear()
+                    .domain([d3.min(prices)-10, d3.max(prices)+10])
+                    .range([height-50, 0])
+
+    let x_axis = d3.axisBottom()
+                    .scale(xScale)
+
+    let y_axis = d3.axisLeft()
+                    .scale(yScale)
+
+    svg.append('g')
+            .attr('transform','translate(50,10)')
+            .call(y_axis)                           // Adds Y axis
+
+    svg.append('g')
+            .attr('transform','translate(50,'+ (height-40)+ ')')
+            .call(x_axis)                           // Adds X axis
+    
+    let g = svg.append("g").attr('transform', 'translate('+50+','+(-50)+')')
+
+    g.selectAll('svg')     
+        .data(prices)
+        .enter().append('rect')     // Creates rectangles
+        .attr('fill','darkgreen')
+        .attr('x', function(d, i){return i*100+15})
+        .attr('y', function(prices){return yScale(prices)+10})
+        .attr('width', function(d, i){return width/6 -25})
+        .attr('height', function(prices){return height - yScale(prices)})
 
     })
 }

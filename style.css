@@ -31,3 +31,11 @@ svg {
     border: solid;
     border-color: darkgreen;
 }
+h1 {
+    font-style: italic;
+    color: darkgreen
+}
+#stockFilter {
+    font-size: 18px;
+    color: darkgreen
+}
